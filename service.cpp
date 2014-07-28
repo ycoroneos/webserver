@@ -22,7 +22,7 @@ int service(int client)
         if (sscanf(buf, "GET %249s HTTP/1.1\n", uri)==1)
         {
             //what is this crap?
-            if (uri[0]==0)
+            if (uri[0]==0 || strstr(uri, "..")!=NULL)
             {
                 return 1;
             }
@@ -50,24 +50,26 @@ int service(int client)
             int count=sprintf(response, "Content-length: %i", fsize);
             write(client, "HTTP/1.1 200 OK\n", 16);
             write(client, response, count);
+            write(client, "Connection: Close\n", 18);
             write(client, "Content-Type: text/html\n\n", 25);
             //write(new_socket, "<html><body><H1>Hello world</H1></body></html>",46);
             char *string = new char[fsize + 1];
             fread(string, fsize, 1, webpage);
             fclose(webpage);
-            write(client, string, fsize);
-            /*int count=0;
-            while (count<=fsize)
+            //write(client, string, fsize);
+            int bytes=0;
+            while (bytes<=fsize)
             {
-                count+=send(client, string, fsize, 0);
+                bytes+=write(client, string, fsize);
             }
-            */
             delete string;
+            sleep(1000);
         }
         //check if the browser wants to keep the connection alive
         if (strstr(buf, "Connection: keep-alive")!=NULL)
         {
-            keepalive=true;
+            //I've decided I don't know what this means
+            //keepalive=true;
         }
     } while (keepalive==true);
     return 1;
