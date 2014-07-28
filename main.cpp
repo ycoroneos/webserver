@@ -8,7 +8,9 @@
 #include <stdlib.h>
 #include <iostream> //c++ streams
 
-#define SERVER_PORT 666
+#include "service.h"
+
+#define SERVER_PORT 80
 #define LISTENQ 8
 
 int main(int argc, char** argv)
@@ -50,7 +52,8 @@ int main(int argc, char** argv)
       //this is the child process
       //Service the request and quit
       close(listener);
-      //service(conn);
+      memset(&servaddr, 0, sizeof(sockaddr_in)); //clients should have no knowledge of the master
+      service(conn);
       close(conn);
       return 1;
     }
