@@ -8,7 +8,9 @@
 #include <stdlib.h>
 #include <iostream> //c++ streams
 
-#include "service.h"
+#include "dynamic.h" //dynamic content engine
+#include "service.h" //simple routing
+
 
 #define SERVER_PORT 80
 #define LISTENQ 8
