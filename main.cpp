@@ -20,6 +20,12 @@ int main(int argc, char** argv)
   int listener, conn;
   pid_t pid;
   struct sockaddr_in servaddr, clientaddr;
+  //first cache templates for dynamic content
+  if (cacheTemplates(argv[1])==1)
+  {
+    perror("couldn't cache templates. Something is probs wrong\n");
+    return 1;
+  }
   listener=socket(AF_INET, SOCK_STREAM, 0);
   if (listener<0)
   {

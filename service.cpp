@@ -59,6 +59,35 @@ int service(int client)
         delete string;
         sleep(1000);
     }
+    else if (sscanf(buf, "POST %249s HTTP/1.1\n", uri)==1)
+    {
+        //what is this crap?
+        if (uri[0]==0 || strstr(uri, "..")!=NULL)
+        {
+            return 1;
+        }
+        int param_length;
+        char params[250];
+        memset(params, 0, 250);
+        if (sscanf(buf, "Content-Length:%i", &param_length)!=1)
+        {
+          return 1;
+        }
+        //they want the index page
+        std::string output=route_dynamic(uri, strlen(uri));
+        char response[25];
+        int count=sprintf(response, "Content-length: %li", output.length());
+        write(client, "HTTP/1.1 200 OK\n", 16);
+        write(client, response, count);
+        write(client, "Connection: Close\n", 18);
+        write(client, "Content-Type: text/html\n\n", 25);
+        int bytes=0;
+        while (bytes<=output.length())
+        {
+            bytes+=write(client, output.c_str(), output.size());
+        }
+        sleep(1000);
+    }
     //check if the browser wants to keep the connection alive
     if (strstr(buf, "Connection: keep-alive")!=NULL)
     {

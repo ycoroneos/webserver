@@ -1,10 +1,10 @@
 #pragma once
 #include <cstdlib>
 #include <iostream>
-#include <string>
+#include <stdio.h>
+#include <string.h>
 #include <ctemplate/template.h>
+#include <string>
 
-int cacheTemplates(const char* file)
-{
-    return 0;
-}
+int cacheTemplates(const char* file);
+std::string route_dynamic(char* uri, int len);

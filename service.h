@@ -6,4 +6,6 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <string.h>
+#include <string>
+#include "dynamic.h"
 int service(int client); //service a requets by parsing it and returning what it wanted
