@@ -1,3 +1,4 @@
 libs=["libctemplate"]
 libpath='/usr/lib'
-Program('server', Glob('*.cpp'), LIBS=libs, LIBPATH=libpath, CXXFLAGS='-O2 -Wall')
+cpppath='./include:./src'
+Program('./bin/server', Glob('src/*.cpp'), LIBS=libs, LIBPATH=libpath, CPPPATH=cpppath, CXXFLAGS='-O2 -Wall')

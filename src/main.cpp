@@ -8,7 +8,6 @@
 #include <stdlib.h>
 #include <iostream> //c++ streams
 
-#include "dynamic.h" //dynamic content engine
 #include "service.h" //simple routing
 
 
@@ -21,11 +20,6 @@ int main(int argc, char** argv)
   pid_t pid;
   struct sockaddr_in servaddr, clientaddr;
   //first cache templates for dynamic content
-  if (cacheTemplates(argv[1])==1)
-  {
-    perror("couldn't cache templates. Something is probs wrong\n");
-    return 1;
-  }
   listener=socket(AF_INET, SOCK_STREAM, 0);
   if (listener<0)
   {
