@@ -11,15 +11,24 @@
 #define GET 0
 #define POST 1
 
+#define DATELENGTH 25
+#define AGENTLENGTH 100
+#define FILELENGTH 75
+#define VERSIONLENGTH 50
+#define CKLENGTH 200
+
+
 struct http_request
 {
   short type; //GET or POST
-  std::string cookie; //the cookie I (may) have sent it
+  char cookie[CKLENGTH]; //the cookie I (may) have sent it
   unsigned int contentLength; //length in bytes of the message
-  char date[25]; //timestring of when this was sent
-  char userAgent[100]; //browser that sent it
-  char file[75]; //the file to post or get or molest
-  char httpVersion[50];; //http protocol that sent this
+  char date[DATELENGTH]; //timestring of when this was sent
+  char userAgent[AGENTLENGTH]; //browser that sent it
+  char file[FILELENGTH]; //the file to post or get or molest
+  char httpVersion[VERSIONLENGTH]; //http protocol that sent this
 };
+
+void initrequest(http_request* request);
 
 int parse_response(const char* data, http_request* request, ctemplate::TemplateDictionary* dict);
