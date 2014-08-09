@@ -19,7 +19,10 @@ int main(int argc, char** argv)
   int listener, conn;
   pid_t pid;
   struct sockaddr_in servaddr, clientaddr;
-  //first cache templates for dynamic content
+  struct timeval tv;
+
+  tv.tv_sec = 10;  /* 10 Secs Timeout */
+  tv.tv_usec = 0;  // Not init'ing this can cause strange errors
   listener=socket(AF_INET, SOCK_STREAM, 0);
   if (listener<0)
   {
@@ -49,6 +52,8 @@ int main(int argc, char** argv)
       perror("error accepting connection...\n");
     }
     printf("connected client: %i\n", &clientaddr.sin_addr.s_addr);
+
+    setsockopt(conn, SOL_SOCKET, SO_RCVTIMEO, (char *)&tv,sizeof(struct timeval));
     if ((pid=fork()) == 0)
     {
       //this is the child process

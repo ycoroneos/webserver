@@ -4,13 +4,12 @@ const char* root="/home/yanni/webserver";
 
 int service(int client)
 {
-    char buf[256];
-    memset(buf, 0, 256);
+    char buf[1024];
+    memset(buf, '\0', 1024);
     int status=0;
-    while (status<=256)
-    {
-      status+=recv(client, buf, 256, 0); //fill buffer with user data
-    }
+    status=recv(client, buf, 1024, 0); //fill buffer with user data
+    buf[status]='\0';
+    printf("received:\n%s", buf);
     http_request request;
     ctemplate::TemplateDictionary dict("dict");
     if (parse_response(buf, &request, &dict)==-1)
