@@ -11,7 +11,7 @@
 #include "service.h" //simple routing
 
 
-#define SERVER_PORT 80
+#define SERVER_PORT 666
 #define LISTENQ 8
 
 int main(int argc, char** argv)
