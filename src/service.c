@@ -9,6 +9,7 @@ int service(int client)
     int status=0;
     status=recv(client, buf, 2048, 0); //fill buffer with user data
     buf[status]='\0';
+    puts(buf);
     struct http_request request;
     initrequest(&request);
     if (parse_response(buf, &request)==-1)
@@ -22,6 +23,29 @@ int service(int client)
     memset(filepath, '\0', 80);
     strncpy(filepath, root_dir, strlen(root_dir));
     strcat(filepath, request.file);
+    if (isphpfile(filepath))
+    {
+      struct phpfpm_envs phpvars;
+      initphpenvs(&phpvars);
+      strncpy(phpvars.content_type, request.contentType, sizeof(phpvars.content_type));
+      snprintf(phpvars.content_length, sizeof(phpvars.content_length), "%d", request.contentLength);
+      if (request.type==GET)
+        strncpy(phpvars.request_method, "GET", 3);
+      else if (request.type==POST)
+        strncpy(phpvars.request_method, "POST", 4);
+      //strncpy(phpvars.script_name, filepath, sizeof(phpvars.script_name));
+      strncpy(phpvars.script_filename, filepath, sizeof(phpvars.script_filename));
+      //strncpy(phpvars.request_uri, filepath, sizeof(phpvars.request_uri));
+      //strncpy(phpvars.document_uri, filepath, sizeof(phpvars.document_uri));
+      printf("-------BEGIN PHP---------\n");
+      printf("method: %s\n", phpvars.request_method);
+      printf("content-length: %s\n", phpvars.content_length);
+      printf("content-type: %s\n", phpvars.content_type);
+      printf("script name: %s\n", phpvars.script_name);
+      runphpfpm(client, &phpvars);
+      printf("-------END PHP---------\n");
+      return 0;
+    }
     FILE *f = fopen(filepath,"rb");
     if (f==NULL)
     {
@@ -52,10 +76,13 @@ int service(int client)
     {
       return -1;
     }
+    sendmimetype(client, filepath);
+        /*
     if (write(client, "Content-Type: text/html\n\n", 25)!=25)
     {
       return -1;
     }
+    */
     int bytes=0;
     while (bytes<contentLength)
     {

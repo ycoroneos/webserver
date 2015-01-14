@@ -9,6 +9,8 @@ void initrequest(struct http_request* request)
   memset(request->userAgent, '\0', AGENTLENGTH);
   memset(request->file, '\0', FILELENGTH);
   memset(request->httpVersion, '\0', VERSIONLENGTH);
+  memset(request->contentType, '\0', sizeof(request->contentType));
+  //memset(request->parameters, '\0', sizeof(struct parameter)*NPARAMS);
   return;
 }
 
@@ -41,19 +43,31 @@ int getEnclosedString(const char* start, const char* end, char* input, char* buf
 }
 
 /*
+int parseParameter(char* data, struct http_request* request)
+{
+  static int count=0;
+  char *parameter, *value;
+  parameter=strtok(data, '=');
+  value=strtok(NULL, '&');
+  if (parameter==NULL || value==NULL || count>=NPARAMS)
+  {
+    return -1;
+  }
+  strncpy(request->parameters[count].name, parameter, sizeof(request->parameters[count].name));
+  strncpy(request->parameters[count].value, value, sizeof(request->parameters[count].value));
+  ++count;
+  return 0;
+}*/
+
+/*
  *Parse tokens in the header, there are 2. : and "\r\n"
  *use strtok()
  *
  */
-
-int parseHeader(char* data, struct http_request* request)
+int parseHeader(struct http_request* request)
 {
-  //char header[20];
-  //char value[200];
-  //memset(header, '\0', 20);
-  //memset(value, '\0', 200);
   char *header, *value;
-  header=strtok(data,":");
+  header=strtok(NULL,":");
   value=strtok(NULL, "\r\n");
   if (header==NULL || value==NULL)
   {
@@ -64,16 +78,21 @@ int parseHeader(char* data, struct http_request* request)
     //its the cookie
     strncpy(request->cookie, value, CKLENGTH);
   }
-  else if (strncmp(header, "Content-Length", 14)==0)
+  else if (strncmp(header, "Content-Length", 14)==0 || strncmp(header, "content-length", 14)==0)
   {
     //content length
     request->contentLength=strtol(value, NULL, 0);
-    //sscanf(value, "%u", &request->contentLength);
   }
   else if (strncmp(header, "Date", 4)==0)
   {
     //datestring
     strncpy(request->date, value, DATELENGTH);
+  }
+  else if (strncmp(header, "content-type", 12)==0)
+
+  {
+    //content type
+    strncpy(request->contentType, value, sizeof(request->contentType));
   }
   else if (strncmp(header, "User-Agent", 10)==0)
   {
@@ -86,8 +105,6 @@ int parseHeader(char* data, struct http_request* request)
 
 int parse_response(char* data, struct http_request* request)
 {
-  //char type[6];
-  //memset(type, '\0', 6);
   char *type;
   char *file;
   char *httpVersion;
@@ -100,7 +117,6 @@ int parse_response(char* data, struct http_request* request)
   }
   strncpy(request->file, file, 75);
   strncpy(request->httpVersion, httpVersion, 50);
-  //sscanf(data, "%6s %75s %50s\r\n", type, request->file, request->httpVersion);
   if (strncmp(request->file, "..", 2)==0)
   {
     printf("tried to jailbreak\n");
@@ -117,35 +133,11 @@ int parse_response(char* data, struct http_request* request)
     printf("unknown request type\n");
     return -1;
   }
-  /*
-  data=strstr(data, "\r\n");
-  if (data==NULL)
-  {
-    printf("error trying to get headers\n");
-    return -1;
-  }
-  data+=2;
-  while (parseHeader(data, request)==0)
-  {
-    data=strstr(data, "\r\n");
-    if (data==NULL)
-    {
-      printf("error parsing headers\n");
-      return -1;
-    }
-    data+=2;
-  }
-  */
-  while (parseHeader(data, request)==0)
+  while (parseHeader(request)==0)
   {
   }
-  //now we're at the content
-  /*data=strstr(data, "\r\n");
-  if (data==NULL)
+/*  while (parseParameter(data, request)==0)
   {
-    printf("error acquiring content\n");
-    return -1;
-  }
-  data+=2;*/
+  }*/
   return 0;
 }

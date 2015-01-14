@@ -14,7 +14,13 @@
 #define FILELENGTH 75
 #define VERSIONLENGTH 50
 #define CKLENGTH 200
+#define NPARAMS 50
 
+struct parameter
+{
+  char name[25];
+  char value[100];
+};
 
 struct http_request
 {
@@ -25,6 +31,9 @@ struct http_request
   char userAgent[AGENTLENGTH]; //browser that sent it
   char file[FILELENGTH]; //the file to post or get
   char httpVersion[VERSIONLENGTH]; //http protocol that sent this
+  char contentType[100]; //type of content client sent
+  char queryString[250];
+  //struct parameter parameters[NPARAMS]; //params from a POST
 };
 
 
