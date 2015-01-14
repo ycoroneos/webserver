@@ -1,0 +1,5 @@
+This is my webserver written completely in C and meant to also be compatible with JOS, the OS I wrote.
+
+As far as security goes, I don't currently do any explicit sandboxing in my code but I do have some
+basic checks to make sure nothing fishy is happeneing. It's definitely not good enough but I'll fix
+that once the webserver meets my standards of functionality.
