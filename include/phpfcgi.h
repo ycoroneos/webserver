@@ -29,6 +29,7 @@ struct phpfpm_envs
   char serv_addr[25];
   char serv_port[25];
   char serv_name[25];
+  char cookie[500];
 };
 
 void runphpfpm(int client_socket, struct phpfpm_envs *env);

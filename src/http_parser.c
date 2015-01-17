@@ -43,6 +43,9 @@ int getEnclosedString(const char* start, const char* end, char* input, char* buf
 }
 
 /*
+ *Parse query string
+ */
+/*
 int parseParameter(char* data, struct http_request* request)
 {
   static int count=0;
@@ -57,7 +60,8 @@ int parseParameter(char* data, struct http_request* request)
   strncpy(request->parameters[count].value, value, sizeof(request->parameters[count].value));
   ++count;
   return 0;
-}*/
+}
+*/
 
 /*
  *Parse tokens in the header, there are 2. : and "\r\n"
@@ -109,7 +113,7 @@ int parse_response(char* data, struct http_request* request)
   char *file;
   char *httpVersion;
   type=strtok(data, " ");
-  file=strtok(NULL, " ");
+  file=strtok(NULL, " "); //stop at POST data or http version
   httpVersion=strtok(NULL, "\r\n");
   if (type==NULL || request==NULL || httpVersion==NULL)
   {
@@ -136,6 +140,19 @@ int parse_response(char* data, struct http_request* request)
   while (parseHeader(request)==0)
   {
   }
+//  if (request->type==POST)
+ // {
+    char *querystring;
+    file=strtok(file,"?");
+    if (strlen(file)==strlen(request->file))
+    {
+      return 0;
+    }
+    querystring=strtok(NULL, " ");
+    strncpy(request->file, file, 75);
+    strncpy(request->queryString, querystring, sizeof(request->queryString));
+ // }
+
 /*  while (parseParameter(data, request)==0)
   {
   }*/

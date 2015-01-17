@@ -13,7 +13,7 @@
 #define AGENTLENGTH 100
 #define FILELENGTH 75
 #define VERSIONLENGTH 50
-#define CKLENGTH 200
+#define CKLENGTH 500
 #define NPARAMS 50
 
 struct parameter

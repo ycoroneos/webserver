@@ -33,10 +33,15 @@ void runphpfpm(int client, struct phpfpm_envs *env)
     setenv("SERVER_ADDR", env->serv_addr, 1);
     setenv("SERVER_PORT", env->serv_port, 1);
     setenv("SERVER_NAME", env->serv_name, 1);
+    setenv("HTTP_COOKIE", env->cookie, 1);
     close(1);
     if (write(client, "HTTP/1.1 200 OK\n", 16)!=16)
     {
       puts("write failed\n");
+      return;
+    }
+    if (write(client, "Connection: close\n", 18)!=18)
+    {
       return;
     }
     dup2(client, 1); //dup socket to stdout

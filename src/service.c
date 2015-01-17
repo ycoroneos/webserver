@@ -37,11 +37,15 @@ int service(int client)
       strncpy(phpvars.script_filename, filepath, sizeof(phpvars.script_filename));
       //strncpy(phpvars.request_uri, filepath, sizeof(phpvars.request_uri));
       //strncpy(phpvars.document_uri, filepath, sizeof(phpvars.document_uri));
+      strncpy(phpvars.query_string, request.queryString, sizeof(phpvars.query_string));
+      strncpy(phpvars.cookie, request.cookie, sizeof(phpvars.cookie));
       printf("-------BEGIN PHP---------\n");
       printf("method: %s\n", phpvars.request_method);
       printf("content-length: %s\n", phpvars.content_length);
       printf("content-type: %s\n", phpvars.content_type);
-      printf("script name: %s\n", phpvars.script_name);
+      printf("script name: %s\n", phpvars.script_filename);
+      printf("query string: %s\n", phpvars.query_string);
+      printf("cookie: %s\n", phpvars.cookie);
       runphpfpm(client, &phpvars);
       printf("-------END PHP---------\n");
       return 0;
