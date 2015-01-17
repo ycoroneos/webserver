@@ -33,7 +33,7 @@ int service(int client)
         strncpy(phpvars.request_method, "GET", 3);
       else if (request.type==POST)
         strncpy(phpvars.request_method, "POST", 4);
-      //strncpy(phpvars.script_name, filepath, sizeof(phpvars.script_name));
+      //strncpy(phpvars.script_name, "http", sizeof(phpvars.script_name));
       strncpy(phpvars.script_filename, filepath, sizeof(phpvars.script_filename));
       //strncpy(phpvars.request_uri, filepath, sizeof(phpvars.request_uri));
       //strncpy(phpvars.document_uri, filepath, sizeof(phpvars.document_uri));
